@@ -5,4 +5,4 @@
   roles:
     #- ec2-provision 
     - Nainterceptor.common
-    - ansible-role-phpmyadmin
+    - phpmyadmin

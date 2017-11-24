@@ -1,0 +1,12 @@
+---
+- name: playbooks
+  hosts: all  
+  sudo: True
+  roles:
+   - role - ec2-provision
+          - ansible-redhat
+          - rhel-hardening
+          - httpd_ssl
+          - lamp_rhel/php70
+          - lamp_rhel/phpmyadmin
+  
