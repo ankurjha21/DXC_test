@@ -1,0 +1,8 @@
+---
+- name: localhost
+  hosts: all  
+  sudo: True
+  roles:
+    - mysql 
+    - httpd
+    - ansible-role-phpmyadmin

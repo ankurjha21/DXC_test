@@ -1,0 +1,12 @@
+---
+- name: Allow RootLogin  Copy template
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    mode: 0664
+# Change Root#
+- name: Chang root password
+  user: name=root password="{{ root_password }}"
+ # when: root_password|default(None) != None
+

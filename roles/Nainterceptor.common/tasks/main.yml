@@ -1,0 +1,81 @@
+---
+# tasks file for nainterceptor.common
+
+# Change Root
+- name: Change root password
+  user: name=root password="{{ root_password }}"
+  when: root_password|default(None) != None
+
+# Upgrade
+- name: "Upgrade all packages"
+  yum: name=* state=latest
+  when: ansible_distribution == 'CentOS'
+
+- name: "Update APT package cache"
+  apt: update_cache=yes cache_valid_time=3600
+  when: ansible_distribution == 'Debian'
+
+- name: "Upgrade APT to the latest packages"
+  apt: upgrade=safe
+  when: ansible_distribution == 'Debian'
+
+#Configure SSH
+#- name: "Configure sshd"
+#  template: src=../files/{{ ansible_distribution }}/sshd_config.j2 dest=/etc/ssh/sshd_config
+#  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Debian'
+#  notify:
+#    - "Restart sshd"
+
+- name: "Install standard packages"
+  yum: name={{ item }} state=present
+  when: ansible_distribution == 'CentOS'
+  with_items:
+    - sudo
+    - epel-release
+    - tar
+    - unzip
+    - rsync
+    - git
+
+- name: "Install standard packages"
+  apt: name={{ item }} state=present
+  when: ansible_distribution == 'Debian'
+  with_items:
+    - sudo
+    - vim
+    - wget
+    - python
+    - python-dev
+    - gcc
+    - git
+
+- name: Check to see if pip is already installed.
+  command: "pip --version"
+  ignore_errors: true
+  changed_when: false
+  register: pip_is_installed
+  when: ansible_distribution == 'Debian'
+
+- name: Download pip.
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp validate_certs=no
+  when: ansible_distribution == 'Debian' and pip_is_installed.rc != 0
+
+- name: Install pip.
+  command: "python /tmp/get-pip.py"
+  sudo: yes
+  when: ansible_distribution == 'Debian' and pip_is_installed.rc != 0
+
+- name: Delete get-pip.py.
+  file: state=absent path=/tmp/get-pip.py
+  when: ansible_distribution == 'Debian' and pip_is_installed.rc != 0
+
+- name: Upgrade to latest version of pip.
+  command: "pip install -U pip"
+  when: ansible_distribution == 'Debian'
+
+- name: Install pip required packages
+  pip: name={{ item }}
+  when: ansible_distribution == 'Debian'
+  with_items:
+    - setuptools
+    - thefuck

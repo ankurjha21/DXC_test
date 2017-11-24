@@ -1,0 +1,5 @@
+---
+# defaults file for nainterceptor.common
+root_password: root@123
+ssh_listen_port: 22
+

@@ -1,0 +1,4 @@
+---
+# handlers file for nainterceptor.common
+- name: "Restart sshd"
+  service: name=sshd state=restarted

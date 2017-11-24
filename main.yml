@@ -1,0 +1,8 @@
+--- 
+- name: playbooks
+  hosts: localhost
+  sudo: True
+  roles:
+    #- ec2-provision 
+    - Nainterceptor.common
+    - ansible-role-phpmyadmin
